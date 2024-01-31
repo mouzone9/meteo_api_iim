@@ -80,13 +80,13 @@ app.post("/geolocate", async (req, res) => {
       temperature
     };
 
-    weatherData.MaPosition = {
+    /*weatherData.MaPosition = {
       name: geoResponse.data.city,
       country: geoResponse.data.country,
       temp_c: temperature
-    };
+    };*/
 
-    console.log(weatherData);
+    //console.log(weatherData);
 
     res.json(responseWithTemperature);
   } catch (error) {
