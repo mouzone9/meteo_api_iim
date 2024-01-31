@@ -47,3 +47,23 @@ app.get("/weather/:city", (req, res) => {
     res.status(404).send("Données non trouvées pour la ville demandée");
   }
 });
+
+// Route pour obtenir l'adresse IP publique et la géolocalisation
+app.get("/geolocate", async (req, res) => {
+  try {
+    // Obtenir l'adresse IP publique
+    const publicIpResponse = await axios.get("http://api.ipify.org");
+    const publicIp = publicIpResponse.data;
+
+    // Utiliser l'adresse IP publique pour la géolocalisation
+    const geoUrl = `http://ip-api.com/json/${publicIp}`;
+    const geoResponse = await axios.get(geoUrl);
+
+    // Extraire la ville et le pays
+    const { city, country } = geoResponse.data;
+    res.json({ city, country });
+  } catch (error) {
+    console.error("Erreur lors de la géolocalisation :", error);
+    res.status(500).send("Erreur lors de la géolocalisation");
+  }
+});
