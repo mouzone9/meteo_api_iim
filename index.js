@@ -3,7 +3,7 @@ const app = express();
 const port = 3002;
 const axios = require("axios"); // Axios pour faire des requêtes HTTP
 const apiKey = "c4a6546ceda64b05ba7134102242901";
-const cities = ["Paris", "London", "Lisbon", "Rome", "Moscow", "New York"];
+const cities = ["Paris", "London", "Lisbon", "Rome", "Moscow", "New_York"];
 let weatherData = {};
 
 // Middleware pour parser le corps des requêtes en JSON
@@ -20,6 +20,7 @@ app.listen(port, () => {
 const fetchWeatherData = async () => {
   for (let city of cities) {
     const url = `http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}&aqi=no`;
+    console.log(url)
     try {
       const response = await axios.get(url);
       // Extraire uniquement le nom de la ville, le pays et la température en Celsius
@@ -80,13 +81,13 @@ app.post("/geolocate", async (req, res) => {
       temperature
     };
 
-    /*weatherData.MaPosition = {
-      name: geoResponse.data.city,
+    weatherData.MaPosition = {
+      name: "MaPosition("+geoResponse.data.city+")",
       country: geoResponse.data.country,
       temp_c: temperature
-    };*/
+    };
 
-    //console.log(weatherData);
+    console.log(weatherData);
 
     res.json(responseWithTemperature);
   } catch (error) {

@@ -17,9 +17,9 @@
 #define DHTPIN 4
 #define DHTTYPE    DHT11
 
-const char* ssid        = "jessy";
-const char* password    = "hmuj3310";
-const char* serverName  = "http://192.168.77.219:3002/weather/";
+const char* ssid        = "iPhone de Diégo";
+const char* password    = "1234567812";
+const char* serverName  = "http://172.20.10.7:3002/weather/";
 const int potPin        = 34;
 int potValue            = 0;
 JsonDocument docx;
@@ -51,13 +51,14 @@ void setup() {
 }
 
 String getCityFromPotValue(int value) {
-  int segmentSize = 4096 / 6; // Pour six villes
+  int segmentSize = 4096 / 7; // Pour six villes
   if (value < segmentSize) return "Paris";
   else if (value < segmentSize * 2) return "London";
   else if (value < segmentSize * 3) return "Lisbon";
   else if (value < segmentSize * 4) return "Rome";
   else if (value < segmentSize * 5) return "Moscow";
-  else return "New York";
+  else if (value < segmentSize * 6) return "MaPosition";
+  else return "New_York";
 }
 
 void loop() {
@@ -66,7 +67,6 @@ void loop() {
     if (WiFi.status() == WL_CONNECTED) {
     potValue = analogRead(potPin); // Lire la valeur du potentiomètre
     String city = getCityFromPotValue(potValue); // Obtenir le nom de la ville
-  
     http.begin(String(serverName) + city);
     int httpResponseCode = http.GET();
     
@@ -87,7 +87,7 @@ void loop() {
   if (isnan(event.temperature)) {
     Serial.println(F("Error reading temperature!"));
   } else {
-    Serial.print(F("Temperature: "));
+    Serial.print(F("Temperature de la salle: "));
     Serial.print(event.temperature);
     Serial.println(F("°C"));
   }
@@ -99,12 +99,12 @@ void loop() {
 
     String json;
     serializeJson(doc, json);
-    http.begin("http://192.168.77.219:3002/geolocate");
+    http.begin("http://172.20.10.7:3002/geolocate");
     http.addHeader("Content-Type", contentType);
     http.setFollowRedirects(HTTPC_FORCE_FOLLOW_REDIRECTS);
-    Serial.print(json);
+    //Serial.print(json);
     http.POST(json);
-    Serial.print(http.getString());
+    //Serial.print(http.getString());
     http.end();
   }
 
@@ -115,14 +115,16 @@ void loop() {
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(10, 10);
 
+  Serial.print(F("City choosen: "));
   Serial.println(cityName);
 
-  display.println(F("City Name"));
+  display.print(F("City: "));
   display.println(cityName);
-  display.println(F("Country Name"));
+  display.print(F("Country: "));
   display.println(countryName);
-  display.println(F("Temperature"));
+  display.print(F("Temperature: "));
   display.println(placeTemperature);
+  display.print(F(" C"));
 
   delay(1000);
   display.display();
